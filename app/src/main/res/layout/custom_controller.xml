@@ -48,6 +48,20 @@
             app:tint="@color/white"/>
     </LinearLayout>
 
+    <ImageButton
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="100dp"
+        android:text="Settings"
+        android:background="@null"
+        android:layout_gravity="right"
+        android:id="@+id/btn_settings"
+        android:layout_weight="0"
+        android:src="@drawable/setting"
+        android:foregroundGravity="right"
+        android:layout_marginRight="20dp" >
+</ImageButton>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

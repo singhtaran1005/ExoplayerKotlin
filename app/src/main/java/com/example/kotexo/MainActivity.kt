@@ -1,30 +1,32 @@
 package com.example.kotexo
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.pm.ActivityInfo
-import android.media.PlaybackParams
+import android.media.MediaFormat
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+//import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.trackselection.TrackSelector
+import com.google.android.exoplayer2.trackselection.*
 import com.google.android.exoplayer2.ui.PlayerView
+//import com.google.android.exoplayer2.util
+
 import com.google.android.exoplayer2.upstream.BandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
+import com.google.android.exoplayer2.util.MimeTypes
+
 
 //class MainActivity : AppCompatActivity() {
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +36,15 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 //}
 
 class MainActivity : AppCompatActivity() {
+
+    //quality selector
+    lateinit var btn_settings: PlayerView
+
+
+    //private for exoplayer
+    private lateinit var trackSelector: DefaultTrackSelector
+    private var trackDialog: Dialog? = null
+
     //Initialize variable
     lateinit var playerView: PlayerView//? = null
     lateinit var progressBar: ProgressBar//? = null
@@ -41,6 +52,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var btMenu: ImageView
     lateinit var btSpeedControl: ImageView//? = null
     lateinit var simpleExoPlayer: SimpleExoPlayer//? = null
+
+    //    lateinit var exo_quality: Button
     var flag = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +64,9 @@ class MainActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progress_bar)
         btFullScreen = playerView.findViewById(R.id.bt_fullscreen)
         btSpeedControl = playerView.findViewById(R.id.speed_control)
+        btn_settings = playerView.findViewById(R.id.btn_settings)
+
+//        exo_quality = playerView.findViewById(R.id.exo_quality)
         btMenu = playerView.findViewById(R.id.img_menu)
         //Make activity full screen
         window.setFlags(
@@ -205,6 +221,78 @@ class MainActivity : AppCompatActivity() {
                 flag = true
             }
         })
+//Quality onclick listener
+//        private fun ImageButton.setOnClickListener(mainActivity: MainActivity) {
+
+//        btn_settings.setOnClickListener(View v {
+//            public void onClick(View v) {
+//            int i1 = v . getId();
+//            if (i1 === R.id.btn_settings) {
+//                val popup = PopupMenu(this@VideoPlayer, v)
+//                popup.setOnMenuItemClickListener(object : OnMenuItemClickListener() {
+//                    fun onMenuItemClick(item: MenuItem): Boolean {
+//                        player.setSelectedTrack(0, item.getItemId() - 1)
+//                        return false
+//                    }
+//                })
+//                val menu: Menu = popup.menu
+//                menu.add(Menu.NONE, 0, 0, "Video Quality")
+//                for (i in 0 until player.getTrackCount(0)) {
+//                    val format: MediaFormat = player.getTrackFormat(0, i)
+//                    if (MimeTypes.isVideo(format.mimeType)) {
+//                        if (format.adaptive) {
+//                            menu.add(1, i + 1, i + 1, "Auto")
+//                        } else {
+//                            menu.add(1, i + 1, i + 1, format.width.toString() + "p")
+//                        }
+//                    }
+//                }
+//                menu.setGroupCheckable(1, true, true)
+//                menu.findItem(player.getSelectedTrack(0) + 1).setChecked(true)
+//                popup.show()
+//            }
+//        })
+//        button.setOnClickListener(object : View.OnClickListener {
+//            override fun onClick(v: View?) {
+//                //your implementation goes here
+//            }
+//        })
+//        }
+
+            btn_settings.setOnClickListener(object : View.OnClickListener{
+                override fun onClick(v : View?){
+//                int i1 = v . getId();
+
+                var i1 = v?.getId();
+            if (i1 === R.id.btn_settings) {
+                val popup = PopupMenu(this@MainActivity, v)
+                popup.setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener,
+                    PopupMenu.OnMenuItemClickListener {
+                    override fun onMenuItemClick(item: MenuItem): Boolean {
+                        simpleExoPlayer.setSelectedTrack(0, item.getItemId() - 1)
+                        return false
+                    }
+                })
+                val menu: Menu = popup.menu
+                menu.add(Menu.NONE, 0, 0, "Video Quality")
+                for (i in 0 until simpleExoPlayer.getTrackCount(0)) {
+                    val format: MediaFormat = simpleExoPlayer.getTrackFormat(0,i)
+                    if (MimeTypes.isVideo(format.mimeType)) {
+                        if (format.adaptive) {
+                            menu.add(1, i + 1, i + 1, "Auto")
+                        } else {
+                            menu.add(1, i + 1, i + 1, format.width.toString() + "p")
+                        }
+                    }
+                }
+                menu.setGroupCheckable(1, true, true)
+                menu.findItem(simpleExoPlayer.getSelectedTrack(0) + 1).setChecked(true)
+                popup.show()
+            }
+        }
+                )
+
+    }
     }
 
     override fun onPause() {
@@ -223,3 +311,48 @@ class MainActivity : AppCompatActivity() {
         simpleExoPlayer!!.playbackState
     }
 }
+
+
+
+//    // QUALITY SELECTOR
+//
+//    @SuppressLint("StringFormatInvalid")
+//    private fun initPopupQuality() {
+//        val mappedTrackInfo = trackSelector.currentMappedTrackInfo
+//        var videoRenderer : Int? = null
+//
+//        if(mappedTrackInfo == null) return else exo_quality.visibility = View.VISIBLE
+//
+//        for(i in 0 until mappedTrackInfo.rendererCount){
+//            if(isVideoRenderer(mappedTrackInfo, i)){
+//                videoRenderer = i
+//            }
+//        }
+//
+//        if(videoRenderer == null){
+//            exo_quality.visibility = View.GONE
+//            return
+//        }
+//
+////        val trackSelectionDialogBuilder = TrackSelectionDialogBuilder(this, getString(com.google.android.exoplayer2.R.string.qualitySelector), trackSelector, videoRenderer)
+////        trackSelectionDialogBuilder.setTrackNameProvider{
+////            // Override function getTrackName
+////            getString(com.google.android.exoplayer2.R.string.exo_track_resolution_pixel, it.height)
+////        }
+////        trackDialog = trackSelectionDialogBuilder.build()
+//    }
+//
+//    private fun isVideoRenderer(
+//        mappedTrackInfo: MappingTrackSelector.MappedTrackInfo,
+//        rendererIndex: Int
+//    ): Boolean {
+//        val trackGroupArray = mappedTrackInfo.getTrackGroups(rendererIndex)
+//        if (trackGroupArray.length == 0) {
+//            return false
+//        }
+//        val trackType = mappedTrackInfo.getRendererType(rendererIndex)
+//        return C.TRACK_TYPE_VIDEO == trackType
+//    }
+//
+//
+//}

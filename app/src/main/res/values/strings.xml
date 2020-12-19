@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">KotExo</string>
+<!--    <string name="exo_track_resolution_pixel">exo_resolution</string>-->
+<!--    <string name="qualitySelector">qulaity</string>-->
+        <string name="exo_track_resolution_pixel"><g id="height" example="768">%1$dp</g></string>
+    <string name="qualitySelector">Select Quality</string>
+
 </resources>
